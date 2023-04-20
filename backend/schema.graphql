@@ -1,44 +1,99 @@
 type Skill {
-    name: String!
-    id: String!
+  name: String!
+  id: String!
 }
 
 type SkillCategory {
-    name: String!
-    id: String!
+  name: String!
+  id: String!
 }
 
 type Prompt {
-    id: String!
-    question: String!
-    type: String!
-    correctAnswer: String
-    choices: [String!]
+  id: String!
+  question: String!
+  type: String!
+  correctAnswer: String
+  choices: [String!]
 }
 
 type Certification {
-    name: String!
-    id: String!
+  name: String!
+  id: String!
 }
 
 interface RequirementFor @relationshipProperties {
-    minRating: Int
-    minSkills: Int
-    minProjects: Int
+  minRating: Int
+  minSkills: Int
+  minProjects: Int
 }
 
 type Knowledge {
-    name: String!
-    description: String!
-    id: String!
-    requiredPrompts: [Prompt!]! @relationship(type: "REQUIREMENT_FOR", direction: IN, properties: "RequirementFor")
-    requiredCerts: [Certification!]! @relationship(type: "REQUIREMENT_FOR", direction: IN, properties: "RequirementFor")
-    requiredSkills: [Skill!]! @relationship(type: "REQUIREMENT_FOR", direction: IN, properties: "RequirementFor")
-    requiredCategories: [SkillCategory!]! @relationship(type: "REQUIREMENT_FOR", direction: IN, properties: "RequirementFor")
+  name: String!
+  description: String!
+  id: String!
+  requiredPrompts: [Prompt!]!
+    @relationship(
+      type: "REQUIREMENT_FOR"
+      direction: IN
+      properties: "RequirementFor"
+    )
+  requiredCerts: [Certification!]!
+    @relationship(
+      type: "REQUIREMENT_FOR"
+      direction: IN
+      properties: "RequirementFor"
+    )
+  requiredSkills: [Skill!]!
+    @relationship(
+      type: "REQUIREMENT_FOR"
+      direction: IN
+      properties: "RequirementFor"
+    )
+  requiredCategories: [SkillCategory!]!
+    @relationship(
+      type: "REQUIREMENT_FOR"
+      direction: IN
+      properties: "RequirementFor"
+    )
 }
 
 type Competency {
-    levels: [Int!]!
-    name: String!
-    id: String!
+  levels: [Int!]!
+  name: String!
+  id: String!
+}
+
+type CompTreeNode @exclude {
+  name: String!
+  id: String!
+  type: String!
+  level: Int!
+  parent: String
+  description: String
+}
+
+type CompSupertreeNode @exclude {
+  name: String!
+  id: String!
+  parent: String
+}
+
+type Query {
+  getCompetencyTree(rootId: String!): [CompTreeNode!]!
+    @cypher(
+      statement: """
+      MATCH (c:Competency {id: $rootId})-[:IS_PREREQUISITE*0..]->(k)
+      OPTIONAL MATCH (k)<-[r:IS_PREREQUISITE]-(p)
+      RETURN {name: k.name, id: k.id, type: labels(k)[0], level: COALESCE(r.level, 0), parent: p.id, description: COALESCE(k.description, '')}
+      """
+    )
+
+  getCompetencyComposition: [CompSupertreeNode!]!
+    @cypher(
+      statement: """
+      MATCH (c:Competency)
+      OPTIONAL MATCH (c)<-[:LEADS_TO]-(p:Competency)
+      RETURN {name: c.name, id: c.id, parent: p.id}
+      """
+    )
 }
