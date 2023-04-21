@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ReactFlow, {
   Background,
   Controls,

@@ -121,4 +121,14 @@ type Mutation {
       RETURN c
       """
     )
+
+  composeCompetencies(parentId: String!, childId: String!): Competency
+    @cypher(
+      statement: """
+      MATCH (p:Competency {id: $parentId})
+      MATCH (c:Competency {id: $childId})
+      CREATE (p)-[:LEADS_TO]->(c)
+      RETURN c
+      """
+    )
 }
