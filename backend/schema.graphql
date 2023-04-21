@@ -98,3 +98,27 @@ type Query {
       """
     )
 }
+
+type Mutation { 
+  addKnowledgeToTree(parentId: String!, knowledgeId: String!, level: Int!): Knowledge
+    @cypher(
+      statement: """
+      MATCH (p {id: $parentId})
+      MATCH (k:Knowledge {id: $knowledgeId})
+      CREATE (p)-[:IS_PREREQUISITE {level: $level}]->(k)
+      RETURN k
+      """
+    )
+
+  mergeCompetency(id: String!, name: String!, levels: [Int!]!): Competency
+    @cypher(
+      statement: """
+      MERGE (c:Competency {id: $id})
+      ON CREATE
+        SET c.name = $name, c.levels = $levels
+      ON MATCH
+        SET c.levels = $levels
+      RETURN c
+      """
+    )
+}

@@ -12,9 +12,17 @@ Nodes are in this format
 const nodeHeight = 50;
 const nodeWidth = 200;
 
+const layerHeight = 100;
+
 const getLayerColor = (layerNum) => {
-  const colors = ["rgba(255, 0, 0, 0.2)", "rgba(255, 0, 255, 0.2)"];
-  return colors[layerNum % 2];
+  const colors = [
+    "rgba(255, 0, 0, 0.2)",
+    "rgba(0, 255, 255, 0.2)",
+    "rgba(0, 255, 0, 0.2)",
+    "rgba(255, 0, 255, 0.2)",
+    "rgba(255, 255, 0, 0.2)",
+  ];
+  return colors[(layerNum - 1) % colors.length];
 };
 
 const getEdges = (nodeArray) => {
@@ -42,11 +50,11 @@ const formatNodeLayer = (layerNodes, layerNum, layerStart) => {
       position: { x: -layerWidth / 2, y: layerStart },
       style: {
         width: layerWidth,
-        height: 70,
+        height: layerHeight,
         backgroundColor: getLayerColor(layerNum),
       },
       data: { type: "Layer", layerNum },
-      type: 'layer'
+      type: "layer",
     },
   ];
 
@@ -62,7 +70,7 @@ const formatNodeLayer = (layerNodes, layerNum, layerStart) => {
       parentNode: `layer-${layerNum}`,
       extent: "parent",
       style: { width: nodeWidth, height: nodeHeight },
-      position: { x: nodeStart, y: 10 },
+      position: { x: nodeStart, y: 40 },
     });
     nodeStart = nodeStart + nodeWidth + 10;
   });
@@ -83,11 +91,11 @@ const getNodes = (stratifiedNodes) => {
       style: { width: nodeWidth, height: nodeHeight },
     },
   ];
-  let layerStart = 75; //50 for node height, 25 for margin
+  let layerStart = nodeHeight + 25; //25 for margin
   stratifiedNodes.forEach((layer, i) => {
     const layerNodes = formatNodeLayer(layer, i + 1, layerStart);
     ret = ret.concat(layerNodes);
-    layerStart += 95; //70 for layer height, 25 for margin
+    layerStart = layerStart + layerHeight + 25; //25 for margin
   });
   return ret;
 };
@@ -117,4 +125,30 @@ export const formatTreeData = (nodeArray) => {
   const formattedEdges = getEdges(cleanedNodeArray);
   const formattedNodes = getNodes(stratifyNodeArray(cleanedNodeArray));
   return { nodes: formattedNodes, edges: formattedEdges };
+};
+
+const getMaxLevel = (nodes) => {
+  return nodes
+    .filter((node) => node.type === "layer")
+    .reduce((maxLayer, node) => {
+      return node.data.layerNum > maxLayer ? node.data.layerNum : maxLayer;
+    }, 0);
+};
+
+export const createNewLayer = (nodes) => {
+  const curLevel = getMaxLevel(nodes);
+  const layerWidth = nodeWidth + 20;
+  const layerYStart = nodeHeight + 25 + curLevel * (layerHeight + 25); //75 for comp node, 125 for each layer
+
+  return {
+    id: `layer-${curLevel + 1}`,
+    position: { x: -layerWidth / 2, y: layerYStart },
+    style: {
+      width: layerWidth,
+      height: layerHeight,
+      backgroundColor: getLayerColor(curLevel + 1),
+    },
+    data: { type: "Layer", layerNum: curLevel + 1 },
+    type: "layer",
+  };
 };
