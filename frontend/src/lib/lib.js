@@ -13,9 +13,9 @@ const nodeHeight = 50;
 const nodeWidth = 200;
 
 const getLayerColor = (layerNum) => {
-    const colors = ['rgba(255, 0, 0, 0.2)', 'rgba(255, 0, 255, 0.2)']
-    return colors[layerNum % 2];
-}
+  const colors = ["rgba(255, 0, 0, 0.2)", "rgba(255, 0, 255, 0.2)"];
+  return colors[layerNum % 2];
+};
 
 const getEdges = (nodeArray) => {
   let ret = [];
@@ -39,29 +39,35 @@ const formatNodeLayer = (layerNodes, layerNum, layerStart) => {
   let ret = [
     {
       id: `layer-${layerNum}`,
-      position: { x: (-layerWidth/2), y: layerStart },
-      style: { width: layerWidth, height: 70, backgroundColor: getLayerColor(layerNum) },
+      position: { x: -layerWidth / 2, y: layerStart },
+      style: {
+        width: layerWidth,
+        height: 70,
+        backgroundColor: getLayerColor(layerNum),
+      },
+      data: { type: "Layer", layerNum },
+      type: 'layer'
     },
   ];
-    
+
   //knowledge nodes
   let nodeStart = 10;
   layerNodes.forEach((node) => {
     ret.push({
-        id: node.id,
-        data: {
-          ...node,
-          label: node.name,
-        },
-        parentNode: `layer-${layerNum}`,
-        extent: "parent",
-        style: { width: nodeWidth, height: nodeHeight },
-        position: {x: nodeStart, y: 10}
-      })
-    nodeStart = nodeStart + nodeWidth + 10
-  })
+      id: node.id,
+      data: {
+        ...node,
+        label: node.name,
+      },
+      parentNode: `layer-${layerNum}`,
+      extent: "parent",
+      style: { width: nodeWidth, height: nodeHeight },
+      position: { x: nodeStart, y: 10 },
+    });
+    nodeStart = nodeStart + nodeWidth + 10;
+  });
 
-  return ret
+  return ret;
 };
 
 const getNodes = (stratifiedNodes) => {
@@ -73,13 +79,13 @@ const getNodes = (stratifiedNodes) => {
         ...compNode,
         label: compNode.name,
       },
-      position: { x: (-nodeWidth/2), y: 0 },
+      position: { x: -nodeWidth / 2, y: 0 },
       style: { width: nodeWidth, height: nodeHeight },
     },
   ];
   let layerStart = 75; //50 for node height, 25 for margin
   stratifiedNodes.forEach((layer, i) => {
-    const layerNodes = formatNodeLayer(layer, i+1, layerStart);
+    const layerNodes = formatNodeLayer(layer, i + 1, layerStart);
     ret = ret.concat(layerNodes);
     layerStart += 95; //70 for layer height, 25 for margin
   });

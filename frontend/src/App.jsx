@@ -2,8 +2,10 @@ import { useState } from "react";
 import CompetencyDirectory from "./components/CompetencyDirectory";
 import CreateNewCompetency from "./components/CreateNewCompetency";
 import CompetencyComposition from "./components/CompetencyComposition";
+import CreateNewKnowledge from "./components/CreateNewKnowledge";
 
 const navigation = [
+  { name: "Create New Knowledge" },
   { name: "View/Edit Competencies" },
   { name: "Create New Competency" },
   { name: "Competency Composition" },
@@ -30,9 +32,10 @@ function App() {
         })}
       </div>
       <div className="w-3/4 h-full flex flex-col ml-4">
-        {current === 0 && <CompetencyDirectory />}
-        {current === 1 && <CreateNewCompetency />}
-        {current === 2 && <CompetencyComposition />}
+        {current === 0 && <CreateNewKnowledge />}
+        {current === 1 && <CompetencyDirectory />}
+        {current === 2 && <CreateNewCompetency />}
+        {current === 3 && <CompetencyComposition />}
       </div>
     </div>
   );

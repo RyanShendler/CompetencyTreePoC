@@ -1,5 +1,5 @@
 import { useLazyQuery, useQuery } from "@apollo/client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ReactFlow, {
   Background,
   Controls,
@@ -10,28 +10,35 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import { GetAllCompetencies, GetCompetencyTree } from "../graphql/competencies";
 import { formatTreeData } from "../lib/lib";
+import LayerNode from "./nodes/LayerNode";
 
 const CompetencyDirectory = () => {
+  const nodesTypes = useMemo(() => ({ layer: LayerNode }), []);
   const [open, setOpen] = useState(true);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedComp, setSelectedComp] = useState("");
   const { data: compData } = useQuery(GetAllCompetencies);
-  const [getCompetencyTree, {data: treeData}] = useLazyQuery(GetCompetencyTree);
+  const [getCompetencyTree, { data: treeData }] =
+    useLazyQuery(GetCompetencyTree);
 
   const initializeGraph = () => {
-    getCompetencyTree({variables: {
-      rootId: selectedComp
-    }})
-    setOpen(false)
-  }
+    getCompetencyTree({
+      variables: {
+        rootId: selectedComp,
+      },
+    });
+    setOpen(false);
+  };
 
   useEffect(() => {
-    if(!treeData) return;
-    const {nodes: formattedNodes, edges: formattedEdges} = formatTreeData(treeData.getCompetencyTree)
-    setNodes(formattedNodes)
-    setEdges(formattedEdges)
-  }, [treeData, setNodes, setEdges])
+    if (!treeData) return;
+    const { nodes: formattedNodes, edges: formattedEdges } = formatTreeData(
+      treeData.getCompetencyTree
+    );
+    setNodes(formattedNodes);
+    setEdges(formattedEdges);
+  }, [treeData, setNodes, setEdges]);
 
   return (
     <div className="flex flex-col space-y-2 w-full h-full">
@@ -76,6 +83,7 @@ const CompetencyDirectory = () => {
           </div>
         )}
         <ReactFlow
+          nodeTypes={nodesTypes}
           nodes={nodes}
           edges={edges}
           onNodesChange={onNodesChange}

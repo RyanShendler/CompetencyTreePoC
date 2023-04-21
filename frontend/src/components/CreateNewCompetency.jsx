@@ -7,14 +7,20 @@ import ReactFlow, {
   useNodesState,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useLazyQuery } from "@apollo/client";
+import { GetCompetencyTree } from "../graphql/competencies";
+import { formatTreeData } from "../lib/lib";
+import LayerNode from "./nodes/LayerNode";
 
 const CreateNewCompetency = () => {
+  const nodeTypes = useMemo(() => ({ layer: LayerNode }), []);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [open, setOpen] = useState(true);
   const [compName, setCompName] = useState("");
+  const [getCompTree, { called, data }] = useLazyQuery(GetCompetencyTree);
 
   const initializeGraph = useCallback(() => {
     setNodes([
@@ -32,6 +38,15 @@ const CreateNewCompetency = () => {
     setOpen(false);
   }, [setEdges, setNodes, setOpen, compName]);
 
+  useEffect(() => {
+    if (!called || !data) return;
+    const { nodes: formattedNodes, edges: formattedEdges } = formatTreeData(
+      data.getCompetencyTree
+    );
+    setNodes(formattedNodes);
+    setEdges(formattedEdges);
+  }, [data, called, setNodes, setEdges]);
+
   return (
     <>
       <div className="flex flex-col space-y-2 w-full h-full">
@@ -39,7 +54,9 @@ const CreateNewCompetency = () => {
           {open && (
             <div className="absolute z-10 inset-0 bg-black/50 flex flex-col items-center justify-center">
               <div className="rounded-md bg-white p-4 flex flex-col items-center">
-                <h3 className="font-medium">Choose a Name for the Competency</h3>
+                <h3 className="font-medium">
+                  Choose a Name for the Competency
+                </h3>
                 <div className="w-full flex flex-row space-x-4 items-center mt-4 justify-between">
                   <label className="text-sm font-medium">
                     Name
@@ -61,14 +78,20 @@ const CreateNewCompetency = () => {
             </div>
           )}
           <ReactFlow
+            nodeTypes={nodeTypes}
             nodes={nodes}
             edges={edges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             fitView
           >
-            <Panel position="top-left" className="p-2 flex flex-col items-center border border-black rounded-md bg-white">
-                <button className="rounded-md bg-slate-600 text-white py-1 px-3 hover:bg-slate-500">Add Layer</button>
+            <Panel
+              position="top-left"
+              className="p-2 flex flex-col items-center border border-black rounded-md bg-white"
+            >
+              <button className="rounded-md bg-slate-600 text-white py-1 px-3 hover:bg-slate-500">
+                Add Layer
+              </button>
             </Panel>
             <MiniMap />
             <Controls />

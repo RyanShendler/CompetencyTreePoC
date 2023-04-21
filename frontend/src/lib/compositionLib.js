@@ -23,7 +23,7 @@ const getNodes = (nodeArray) => {
       style: { width: nodeWidth, height: nodeHeight },
       position: {x: start, y: 0},
     });
-    start += 210;
+    start = start + nodeWidth + 10;
   });
 
   return ret;
