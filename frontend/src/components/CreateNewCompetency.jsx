@@ -38,6 +38,7 @@ const CreateNewCompetency = () => {
   const [compName, setCompName] = useState("");
   const [compId, setCompId] = useState("");
   const [levels, setLevels] = useState([]);
+  const [disabled, setDisabled] = useState(false);
 
   const { data: knowledgeData } = useQuery(GetAllKnowledge, {
     variables: {
@@ -81,6 +82,7 @@ const CreateNewCompetency = () => {
   };
 
   const addKnowledgeNode = async () => {
+    setDisabled(true)
     const newLevels = [...levels];
     newLevels[addKnowledgeLayer - 1] = !newLevels[addKnowledgeLayer - 1]
       ? 1
@@ -113,6 +115,7 @@ const CreateNewCompetency = () => {
     setKnowledgeInput("");
     setPrereqInput(compId);
     setLevels(newLevels);
+    setDisabled(false)
     dispatch(toggleAddKnowledge({ open: false, layerNum: 0 }));
   };
 
@@ -249,8 +252,9 @@ const CreateNewCompetency = () => {
               </select>
             </label>
             <button
+              disabled={disabled}
               onClick={() => addKnowledgeNode()}
-              className="mt-4 w-1/3 rounded-md p-1 text-white bg-slate-800 hover:bg-slate-700"
+              className="mt-4 w-1/3 rounded-md p-1 text-white bg-slate-800 hover:bg-slate-700 disabled:bg-slate-900"
             >
               Add Knowledge
             </button>

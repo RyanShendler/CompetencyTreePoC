@@ -3,9 +3,26 @@ type Skill {
   id: String!
 }
 
+input RequiredSkill {
+  skillId: String!
+  minRating: Int!
+  minProjects: Int!
+}
+
 type SkillCategory {
   name: String!
   id: String!
+  childSkills: [Skill!]! @cypher(statement: """
+    MATCH (this:SkillCategory)<-[:SUB_CLASS_OF*1..]-(s:Skill)
+    RETURN DISTINCT s
+  """)
+}
+
+input RequiredCategory {
+  categoryId: String!
+  minSkills: Int!
+  minRating: Int!
+  minProjects: Int!
 }
 
 type Prompt {
@@ -16,9 +33,20 @@ type Prompt {
   choices: [String!]
 }
 
+input RequiredPrompt {
+  question: String!
+  type: String!
+  choices: [String!]!
+  correctAnswer: String!
+}
+
 type Certification {
   name: String!
   id: String!
+}
+
+input RequiredCert {
+  certId: String!
 }
 
 interface RequirementFor @relationshipProperties {
@@ -129,6 +157,53 @@ type Mutation {
       MATCH (c:Competency {id: $childId})
       CREATE (p)-[:LEADS_TO]->(c)
       RETURN c
+      """
+    )
+
+  attachRequiredSkills(knowledgeId: String!, requiredSkills: [RequiredSkill!]!): Knowledge
+    @cypher(
+      statement: """
+      MATCH (k:Knowledge {id: $knowledgeId})
+      UNWIND $requiredSkills as skill
+      MATCH (s:Skill {id: skill.skillId})
+      CREATE (s)-[:REQUIREMENT_FOR {minRating: skill.minRating, minProjects: skill.minProjects}]->(k)
+      WITH k, count(*) as dummy
+      RETURN k
+      """
+    )
+
+  attachRequiredCategories(knowledgeId: String!, requiredCategories: [RequiredCategory!]!): Knowledge
+    @cypher(
+      statement: """
+      MATCH (k:Knowledge {id: $knowledgeId})
+      UNWIND $requiredCategories as category
+      MATCH (c:SkillCategory {id: category.categoryId})
+      CREATE (c)-[:REQUIREMENT_FOR {minSkills: category.minSkills, minRating: category.minRating, minProjects: category.minProjects}]->(k)
+      WITH k, count(*) as dummy
+      RETURN k
+      """
+    )
+
+  attachRequiredCerts(knowledgeId: String!, requiredCerts: [RequiredCert!]!): Knowledge
+    @cypher(
+      statement: """
+      MATCH (k:Knowledge {id: $knowledgeId})
+      UNWIND $requiredCerts as cert
+      MATCH (c:Certification {id: cert.certId})
+      CREATE (c)-[:REQUIREMENT_FOR]->(k)
+      WITH k, count(*) as dummy
+      RETURN k
+      """
+    )
+  
+  attachRequiredPrompts(knowledgeId: String!, requiredPrompts: [RequiredPrompt!]!): Knowledge
+    @cypher(
+      statement: """
+      MATCH (k:Knowledge {id: $knowledgeId})
+      UNWIND $requiredPrompts as prompt
+      CREATE (:Prompt {id: randomUUID(), question: prompt.question, type: prompt.type, correctAnswer: prompt.correctAnswer, choices: prompt.choices})-[:REQUIREMENT_FOR]->(k)
+      WITH k, count(*) as dummy
+      RETURN k
       """
     )
 }

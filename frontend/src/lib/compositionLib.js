@@ -9,23 +9,36 @@ const cleanNodeArray = (nodeArray) => {
   });
 };
 
+const getGroupNodes = (rootNode, nodeArray, retArray, xStart, yStart) => {
+  const childNode = nodeArray.find((n) => n.parent === rootNode.id)
+  const formattedNode = {
+    id: rootNode.id,
+    data: {
+      ...rootNode,
+      label: rootNode.name
+    },
+    style: { width: nodeWidth, height: nodeHeight },
+    position: {x: xStart, y: yStart},
+  }
+  //if node has no children, just add to array and return
+  if(!childNode) {
+    return [...retArray, formattedNode]
+  }
+
+  //if node has children, add to array and then check child node for children
+  return getGroupNodes(childNode, nodeArray, [...retArray, formattedNode], xStart, yStart+nodeHeight+25)
+}
+
 const getNodes = (nodeArray) => {
   let ret = [];
-  let start = 0
+  let nodes = [...nodeArray];
+  let xStart = 0;
 
-  nodeArray.forEach((node) => {
-    ret.push({
-      id: node.id,
-      data: {
-        ...node,
-        label: node.name,
-      },
-      style: { width: nodeWidth, height: nodeHeight },
-      position: {x: start, y: 0},
-    });
-    start = start + nodeWidth + 10;
-  });
-
+  nodes.filter((n) => !n.parent).forEach((n) => {
+    ret = ret.concat(getGroupNodes(n, nodes, [], xStart, 0))
+    xStart = xStart + nodeWidth + 25;
+  })
+  
   return ret;
 };
 
