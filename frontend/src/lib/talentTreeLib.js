@@ -1,4 +1,6 @@
 import { cleanNodeArray, getEdges, stratifyNodeArray } from "./lib";
+import store from "../redux/store";
+import { toggleLayers } from "../redux/layerSlice";
 
 const nodeHeight = 50;
 const nodeWidth = 200;
@@ -76,6 +78,7 @@ const getNodes = (stratifiedNodes) => {
       type: "comp",
     },
   ];
+  let completedLayers = []
   let locked = false;
   let layerStart = nodeHeight + 25; //25 for margin
   stratifiedNodes.forEach((layer, i) => {
@@ -86,10 +89,15 @@ const getNodes = (stratifiedNodes) => {
       compNode.levels,
       locked
     );
+    completedLayers.push({
+      required: compNode.levels[i],
+      completed: layer.filter((n) => n.completed).length
+    })
     ret = ret.concat(layerNodes);
     layerStart = layerStart + layerHeight + 25; //25 for margin
     if (!checkLayerComplete(layer, compNode.levels[i])) locked = true;
   });
+  store.dispatch(toggleLayers({layers: completedLayers}))
   return ret;
 };
 

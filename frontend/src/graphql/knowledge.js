@@ -132,3 +132,16 @@ export const GetUserKnowledge = gql`
     }
   }
 `;
+
+export const ClaimKnowledge = gql`
+  mutation ClaimKnowledge($knowledgeId: String!) {
+    claimKnowledge(knowledgeId: $knowledgeId) {
+      name
+    }
+  }
+`;
+/*
+{
+  "knowledgeId": null
+}
+*/

@@ -168,7 +168,7 @@ type Query {
       parent: p.id,
       description: COALESCE(k.description, ''),
       levels: k.levels,
-      completed: CASE WHEN k:Competency THEN true ELSE exists((k)<-[:HAS_KNOWLEDGE]-(:Person)) END}
+      completed: CASE WHEN k:Competency THEN exists((k)<-[:HAS_COMPETENCY]-(:Person)) ELSE exists((k)<-[:HAS_KNOWLEDGE]-(:Person)) END}
       """
     )
 

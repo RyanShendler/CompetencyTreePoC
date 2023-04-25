@@ -105,9 +105,9 @@ export const cleanNodeArray = (nodeArray) => {
     let copy = { ...node };
     delete copy.__typename;
     if (node.parent) {
-      copy.parentCompleted = nodeArray.find(
-        (n) => n.id === node.parent
-      ).completed;
+      const parent = nodeArray.find((n) => n.id === node.parent);
+      copy.parentCompleted =
+        parent.type === "Competency" ? true : parent.completed;
     }
     return copy;
   });
