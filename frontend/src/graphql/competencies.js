@@ -18,6 +18,7 @@ export const GetCompetencyTree = gql`
       level
       parent
       type
+      levels
     }
   }
 `;

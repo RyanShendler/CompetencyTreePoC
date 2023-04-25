@@ -25,7 +25,7 @@ const getLayerColor = (layerNum) => {
   return colors[(layerNum - 1) % colors.length];
 };
 
-const getEdges = (nodeArray) => {
+export const getEdges = (nodeArray) => {
   let ret = [];
   nodeArray.forEach((node) => {
     if (node.parent) {
@@ -100,7 +100,7 @@ const getNodes = (stratifiedNodes) => {
   return ret;
 };
 
-const cleanNodeArray = (nodeArray) => {
+export const cleanNodeArray = (nodeArray) => {
   return nodeArray.map((node) => {
     let copy = { ...node };
     delete copy.__typename;
@@ -108,7 +108,7 @@ const cleanNodeArray = (nodeArray) => {
   });
 };
 
-const stratifyNodeArray = (nodeArray) => {
+export const stratifyNodeArray = (nodeArray) => {
   let ret = {};
   nodeArray.forEach((node) => {
     if (!ret[node.level]) {

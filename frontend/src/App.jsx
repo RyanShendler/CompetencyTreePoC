@@ -3,12 +3,14 @@ import CompetencyDirectory from "./components/CompetencyDirectory";
 import CreateNewCompetency from "./components/CreateNewCompetency";
 import CompetencyComposition from "./components/CompetencyComposition";
 import CreateNewKnowledge from "./components/CreateNewKnowledge";
+import TalentTree from "./components/TalentTree";
 
 const navigation = [
   { name: "Create New Knowledge" },
   { name: "View/Edit Competencies" },
   { name: "Create New Competency" },
   { name: "Competency Composition" },
+  { name: "Talent Tree" },
 ];
 
 function App() {
@@ -36,6 +38,7 @@ function App() {
         {current === 1 && <CompetencyDirectory />}
         {current === 2 && <CreateNewCompetency />}
         {current === 3 && <CompetencyComposition />}
+        {current === 4 && <TalentTree />}
       </div>
     </div>
   );

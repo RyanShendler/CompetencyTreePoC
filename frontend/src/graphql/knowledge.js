@@ -21,6 +21,55 @@ export const GetAllKnowledge = gql`
 }
 */
 
+export const GetKnowledgeDetails = gql`
+  query GetKnowledgeDetails($where: KnowledgeWhere) {
+    knowledges(where: $where) {
+      name
+      description
+      requiredSkillsConnection {
+        edges {
+          minRating
+          minProjects
+          node {
+            name
+          }
+        }
+      }
+      requiredCategoriesConnection {
+        edges {
+          minSkills
+          minRating
+          minProjects
+          node {
+            name
+          }
+        }
+      }
+      requiredCertsConnection {
+        edges {
+          node {
+            name
+          }
+        }
+      }
+      requiredPromptsConnection {
+        edges {
+          node {
+            question
+            choices
+            correctAnswer
+          }
+        }
+      }
+    }
+  }
+`;
+/*
+{
+  "where": null
+}
+*/
+
 export const CreateKnowledge = gql`
   mutation CreateKnowledge($input: [KnowledgeCreateInput!]!) {
     createKnowledges(input: $input) {

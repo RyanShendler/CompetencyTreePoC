@@ -1,3 +1,8 @@
+type Person {
+  name: String!
+  id: String!
+}
+
 type Skill {
   name: String!
   id: String!
@@ -98,6 +103,7 @@ type CompTreeNode @exclude {
   level: Int!
   parent: String
   description: String
+  levels: [Int!]
 }
 
 type CompSupertreeNode @exclude {
@@ -113,7 +119,7 @@ type Query {
       MATCH (c:Competency {id: $rootId})-[:IS_PREREQUISITE*0..]->(k)
       OPTIONAL MATCH (k)<-[r:IS_PREREQUISITE]-(p)
       WHERE exists((p)<-[:IS_PREREQUISITE*0..]-(c))
-      RETURN {name: k.name, id: k.id, type: labels(k)[0], level: COALESCE(r.level, 0), parent: p.id, description: COALESCE(k.description, '')}
+      RETURN {name: k.name, id: k.id, type: labels(k)[0], level: COALESCE(r.level, 0), parent: p.id, description: COALESCE(k.description, ''), levels: k.levels}
       """
     )
 
