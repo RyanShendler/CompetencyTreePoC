@@ -104,6 +104,11 @@ export const cleanNodeArray = (nodeArray) => {
   return nodeArray.map((node) => {
     let copy = { ...node };
     delete copy.__typename;
+    if (node.parent) {
+      copy.parentCompleted = nodeArray.find(
+        (n) => n.id === node.parent
+      ).completed;
+    }
     return copy;
   });
 };

@@ -6,13 +6,13 @@ import { useEffect, useState } from "react";
 
 const skillRatingMap = ["knowledgeable", "proficient", "expert"];
 
-const TalentTreeKnowledgeNode = ({ data }) => {
+const TalentTreeKnowledgeNode = ({ data: { id, name, completed, locked } }) => {
   const [open, setOpen] = useState(false);
   const [reqList, setReqList] = useState([]);
   const { data: knowledgeData } = useQuery(GetKnowledgeDetails, {
     variables: {
       where: {
-        id: data.id,
+        id: id,
       },
     },
   });
@@ -44,17 +44,25 @@ const TalentTreeKnowledgeNode = ({ data }) => {
         `Must correctly answer the following question: ${reqPrompt.node.question}`
     );
 
-    setReqList([...skillReqs, ...categoryReqs, ...certReqs, ...promptReqs])
+    setReqList([...skillReqs, ...categoryReqs, ...certReqs, ...promptReqs]);
   }, [knowledge]);
 
   return (
     <>
       <Handle type="target" position="top" />
       <div
-        onClick={() => setOpen(true)}
-        className="flex flex-col justify-center items-center bg-white hover:bg-gray-50 w-full h-full rounded-md cursor-pointer border border-black"
+        onClick={() => {
+          if (!locked && !completed) setOpen(true);
+        }}
+        className={`flex flex-col justify-center items-center w-full h-full rounded-md border border-black ${
+          locked
+            ? "cursor-default bg-gray-200"
+            : completed
+            ? "cursor-default bg-green-500"
+            : "cursor-pointer bg-white hover:bg-gray-50"
+        }`}
       >
-        <div className="text-sm font-medium">{data.name}</div>
+        <div className="text-sm font-medium">{name}</div>
       </div>
       <Handle type="source" position="bottom" />
       <Modal
@@ -62,7 +70,7 @@ const TalentTreeKnowledgeNode = ({ data }) => {
         onSecondaryButtonClick={() => setOpen(false)}
         content={
           <div className="flex flex-col">
-            <h3 className="text-sm font-medium">{data.name}</h3>
+            <h3 className="text-sm font-medium">{name}</h3>
             {!knowledge ? (
               <div className="text-sm font-normal mt-2">Loading...</div>
             ) : (
@@ -77,7 +85,11 @@ const TalentTreeKnowledgeNode = ({ data }) => {
                       <li className="text-sm">No Requirements</li>
                     ) : (
                       reqList.map((req, i) => {
-                        return <li className="text-sm" key={i}>{req}</li>;
+                        return (
+                          <li className="text-sm" key={i}>
+                            {req}
+                          </li>
+                        );
                       })
                     )}
                   </ul>

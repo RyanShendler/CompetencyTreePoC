@@ -16,7 +16,7 @@ const getLayerColor = (layerNum) => {
   return colors[(layerNum - 1) % colors.length];
 };
 
-const formatNodeLayer = (layerNodes, layerNum, layerStart, levelArray) => {
+const formatNodeLayer = (layerNodes, layerNum, layerStart, levelArray, layerLocked) => {
   //layer node
   const layerWidth = layerNodes.length * (nodeWidth + 10) + 10;
   let ret = [
@@ -26,7 +26,7 @@ const formatNodeLayer = (layerNodes, layerNum, layerStart, levelArray) => {
       style: {
         width: layerWidth,
         height: layerHeight,
-        backgroundColor: getLayerColor(layerNum),
+        backgroundColor: layerLocked ? "rgba(83, 83, 83, 0.2)" : getLayerColor(layerNum),
       },
       data: { type: "Layer", layerNum, reqKnowledge: levelArray[layerNum-1] },
       type: "layer",
@@ -40,6 +40,7 @@ const formatNodeLayer = (layerNodes, layerNum, layerStart, levelArray) => {
       id: node.id,
       data: {
         ...node,
+        locked: layerLocked || !node.parentCompleted
       },
       parentNode: `layer-${layerNum}`,
       extent: "parent",
@@ -66,14 +67,21 @@ const getNodes = (stratifiedNodes) => {
       type: "comp",
     },
   ];
+  let locked = false
   let layerStart = nodeHeight + 25; //25 for margin
   stratifiedNodes.forEach((layer, i) => {
-    const layerNodes = formatNodeLayer(layer, i + 1, layerStart, compNode.levels);
+    const layerNodes = formatNodeLayer(layer, i + 1, layerStart, compNode.levels, locked);
     ret = ret.concat(layerNodes);
     layerStart = layerStart + layerHeight + 25; //25 for margin
+    if(!checkLayerComplete(layer, compNode.levels[i])) locked = true
   });
   return ret;
 };
+
+const checkLayerComplete = (layerNodes, layerReq) => {
+  const completedNodes = layerNodes.filter((n) => n.completed)
+  return completedNodes.length >= layerReq
+}
 
 export const formatTalentTreeData = (nodeArray) => {
   const cleanedNodeArray = cleanNodeArray(nodeArray);

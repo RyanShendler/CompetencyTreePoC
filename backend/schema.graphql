@@ -104,6 +104,7 @@ type CompTreeNode @exclude {
   parent: String
   description: String
   levels: [Int!]
+  completed: Boolean!
 }
 
 type CompSupertreeNode @exclude {
@@ -119,7 +120,13 @@ type Query {
       MATCH (c:Competency {id: $rootId})-[:IS_PREREQUISITE*0..]->(k)
       OPTIONAL MATCH (k)<-[r:IS_PREREQUISITE]-(p)
       WHERE exists((p)<-[:IS_PREREQUISITE*0..]-(c))
-      RETURN {name: k.name, id: k.id, type: labels(k)[0], level: COALESCE(r.level, 0), parent: p.id, description: COALESCE(k.description, ''), levels: k.levels}
+      RETURN {name: k.name, 
+      id: k.id, type: labels(k)[0], 
+      level: COALESCE(r.level, 0), 
+      parent: p.id, 
+      description: COALESCE(k.description, ''), 
+      levels: k.levels,
+      completed: CASE WHEN k:Competency THEN true ELSE exists((k)<-[:HAS_KNOWLEDGE]-(:Person)) END}
       """
     )
 
