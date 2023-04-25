@@ -3,12 +3,24 @@ import { Handle } from "reactflow";
 import { GetKnowledgeDetails } from "../../graphql/knowledge";
 import Modal from "../Modal";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import {
+  checkCategoryRequirement,
+  checkCertRequirement,
+  checkSkillRequirement,
+} from "../../lib/talentTreeLib";
 
 const skillRatingMap = ["knowledgeable", "proficient", "expert"];
 
 const TalentTreeKnowledgeNode = ({ data: { id, name, completed, locked } }) => {
   const [open, setOpen] = useState(false);
   const [reqList, setReqList] = useState([]);
+  const [questions, setQuestions] = useState([]);
+  const {
+    skills: userSkills,
+    projectSkills: userProjectSkills,
+    certs: userCerts,
+  } = useSelector((state) => state.userKnowledge);
   const { data: knowledgeData } = useQuery(GetKnowledgeDetails, {
     variables: {
       where: {
@@ -19,34 +31,54 @@ const TalentTreeKnowledgeNode = ({ data: { id, name, completed, locked } }) => {
   const knowledge = knowledgeData?.knowledges?.[0];
 
   useEffect(() => {
-    if (!knowledge) return;
+    if (!knowledge || !userSkills || !userProjectSkills || !userCerts) return;
     const skillReqs = knowledge?.requiredSkillsConnection.edges.map(
-      (reqSkill) =>
-        `Must be ${skillRatingMap[reqSkill.minRating - 1]} in ${
-          reqSkill.node.name
-        }${
-          reqSkill.minProjects > 0
-            ? ` and have used it on at least ${reqSkill.minProjects} projects`
-            : ""
-        }`
+      (reqSkill) => {
+        const completed = checkSkillRequirement(
+          reqSkill,
+          userSkills,
+          userProjectSkills
+        );
+
+        return {
+          name: `Must be ${skillRatingMap[reqSkill.minRating - 1]} in ${
+            reqSkill.node.name
+          }${
+            reqSkill.minProjects > 0
+              ? ` and have used it on at least ${reqSkill.minProjects} projects`
+              : ""
+          }`,
+          completed,
+        };
+      }
     );
     const categoryReqs = knowledge?.requiredCategoriesConnection.edges.map(
-      (reqCategory) =>
-        `Must be ${skillRatingMap[reqCategory.minRating - 1]} in at least ${
-          reqCategory.minSkills
-        } skills from the ${reqCategory.node.name} category`
-    );
-    const certReqs = knowledge?.requiredCertsConnection.edges.map(
-      (reqCert) => `Must have ${reqCert.node.name}`
-    );
-    const promptReqs = knowledge?.requiredPromptsConnection.edges.map(
-      (reqPrompt) =>
-        `Must correctly answer the following question: ${reqPrompt.node.question}`
-    );
+      (reqCategory) => {
+        const completed = checkCategoryRequirement(
+          reqCategory,
+          userSkills,
+          userProjectSkills
+        );
 
-    setReqList([...skillReqs, ...categoryReqs, ...certReqs, ...promptReqs]);
-  }, [knowledge]);
+        return {
+          name: `Must be ${
+            skillRatingMap[reqCategory.minRating - 1]
+          } in at least ${reqCategory.minSkills} skills from the ${
+            reqCategory.node.name
+          } category`,
+          completed,
+        };
+      }
+    );
+    const certReqs = knowledge?.requiredCertsConnection.edges.map((reqCert) => {
+      const completed = checkCertRequirement(reqCert, userCerts);
 
+      return { name: `Must have ${reqCert.node.name}`, completed };
+    });
+
+    setReqList([...skillReqs, ...categoryReqs, ...certReqs]);
+  }, [knowledge, userSkills, userProjectSkills, userCerts]);
+  
   return (
     <>
       <Handle type="target" position="top" />
@@ -86,13 +118,22 @@ const TalentTreeKnowledgeNode = ({ data: { id, name, completed, locked } }) => {
                     ) : (
                       reqList.map((req, i) => {
                         return (
-                          <li className="text-sm" key={i}>
-                            {req}
+                          <li className="text-sm flex" key={i}>
+                            {req.name}
+                            {req.completed ? (
+                              <span className="ml-1 text-green-600">✓</span>
+                            ) : (
+                              <span className="ml-1 text-red-600">X</span>
+                            )}
                           </li>
                         );
                       })
                     )}
                   </ul>
+                </div>
+                <div className="flex flex-col mt-4">
+                  <h3 className="text-sm font-medium">Questions:</h3>
+                  <div className="flex flex-col"></div>
                 </div>
               </>
             )}

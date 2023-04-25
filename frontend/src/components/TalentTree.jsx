@@ -9,13 +9,29 @@ import ReactFlow, {
   useNodesState,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { formatTalentTreeData } from "../lib/talentTreeLib";
+import {
+  formatTalentTreeData,
+  processProjectSkills,
+  processUserCerts,
+  processUserSkills,
+} from "../lib/talentTreeLib";
 import TalentTreeLayerNode from "./nodes/TalentTreeLayerNode";
 import TalentTreeKnowledgeNode from "./nodes/TalentTreeKnowledgeNode";
 import TalentTreeCompNode from "./nodes/TalentTreeCompNode";
+import { GetUserKnowledge } from "../graphql/knowledge";
+import { useDispatch } from "react-redux";
+import { toggleUserKnowledge } from "../redux/userKnowledge";
 
 const TalentTree = () => {
-  const nodesTypes = useMemo(() => ({ layer: TalentTreeLayerNode, knowledge: TalentTreeKnowledgeNode, comp: TalentTreeCompNode }), []);
+  const nodesTypes = useMemo(
+    () => ({
+      layer: TalentTreeLayerNode,
+      knowledge: TalentTreeKnowledgeNode,
+      comp: TalentTreeCompNode,
+    }),
+    []
+  );
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(true);
   const [selectedComp, setSelectedComp] = useState("");
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -23,6 +39,7 @@ const TalentTree = () => {
   const { data: compData } = useQuery(GetAllCompetencies);
   const [getCompetencyTree, { data: treeData, called }] =
     useLazyQuery(GetCompetencyTree);
+  const { data: userData } = useQuery(GetUserKnowledge);
 
   const initializeGraph = () => {
     getCompetencyTree({
@@ -40,6 +57,24 @@ const TalentTree = () => {
     setNodes(formattedNodes);
     setEdges(formattedEdges);
   }, [treeData, called, setNodes, setEdges]);
+
+  useEffect(() => {
+    if (!userData) return;
+    const userSkills = processUserSkills(
+      userData?.people?.[0]?.knownSkillsConnection?.edges ?? []
+    );
+    const userCerts = processUserCerts(userData?.people?.[0]?.knownCerts ?? []);
+    const projectSkills = processProjectSkills(
+      userData?.people?.[0]?.projectAssessments ?? []
+    );
+    dispatch(
+      toggleUserKnowledge({
+        skills: userSkills,
+        certs: userCerts,
+        projectSkills: projectSkills,
+      })
+    );
+  }, [userData, dispatch]);
 
   return (
     <div className="flex flex-col space-y-2 w-full h-full">

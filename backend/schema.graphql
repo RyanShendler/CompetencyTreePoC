@@ -1,11 +1,50 @@
+type Project {
+  name: String!
+  id: String!
+  peopleWorkedOn: [Person!]!
+    @relationship(type: "HAS_EXPERIENCE", direction: IN)
+  assessments: [AssessmentCompletion!]!
+    @relationship(type: "ASSESSMENT_FOR", direction: IN)
+}
+
+type AssessmentCompletion {
+  completedBy: [Person!]! @relationship(type: "COMPLETED", direction: IN)
+  projectAssessed: [Project!]!
+    @relationship(type: "ASSESSMENT_FOR", direction: OUT)
+  skillsUsed: [Skill!]!
+    @relationship(type: "USES_SKILL", direction: OUT, properties: "UsesSkill")
+}
+
+interface UsesSkill @relationshipProperties {
+  rating: Int!
+}
+
 type Person {
   name: String!
   id: String!
+  knownSkills: [Skill!]!
+    @relationship(type: "HAS_SKILL", direction: OUT, properties: "HasSkill")
+  knownCerts: [Certification!]! @relationship(type: "ACQUIRED", direction: OUT)
+  projectsWorkedOn: [Project!]!
+    @relationship(type: "HAS_EXPERIENCE", direction: OUT)
+  projectAssessments: [AssessmentCompletion!]!
+    @relationship(type: "COMPLETED", direction: OUT)
+}
+
+interface HasSkill @relationshipProperties {
+  rating: Int!
 }
 
 type Skill {
   name: String!
   id: String!
+  categories: [SkillCategory!]!
+    @cypher(
+      statement: """
+      MATCH (this:Skill)-[:SUB_CLASS_OF*1..]->(s:SkillCategory)
+      RETURN s
+      """
+    )
 }
 
 input RequiredSkill {
@@ -17,10 +56,13 @@ input RequiredSkill {
 type SkillCategory {
   name: String!
   id: String!
-  childSkills: [Skill!]! @cypher(statement: """
-    MATCH (this:SkillCategory)<-[:SUB_CLASS_OF*1..]-(s:Skill)
-    RETURN DISTINCT s
-  """)
+  childSkills: [Skill!]!
+    @cypher(
+      statement: """
+      MATCH (this:SkillCategory)<-[:SUB_CLASS_OF*1..]-(s:Skill)
+      RETURN DISTINCT s
+      """
+    )
 }
 
 input RequiredCategory {
@@ -120,11 +162,11 @@ type Query {
       MATCH (c:Competency {id: $rootId})-[:IS_PREREQUISITE*0..]->(k)
       OPTIONAL MATCH (k)<-[r:IS_PREREQUISITE]-(p)
       WHERE exists((p)<-[:IS_PREREQUISITE*0..]-(c))
-      RETURN {name: k.name, 
-      id: k.id, type: labels(k)[0], 
-      level: COALESCE(r.level, 0), 
-      parent: p.id, 
-      description: COALESCE(k.description, ''), 
+      RETURN {name: k.name,
+      id: k.id, type: labels(k)[0],
+      level: COALESCE(r.level, 0),
+      parent: p.id,
+      description: COALESCE(k.description, ''),
       levels: k.levels,
       completed: CASE WHEN k:Competency THEN true ELSE exists((k)<-[:HAS_KNOWLEDGE]-(:Person)) END}
       """
@@ -140,8 +182,12 @@ type Query {
     )
 }
 
-type Mutation { 
-  addKnowledgeToTree(parentId: String!, knowledgeId: String!, level: Int!): Knowledge
+type Mutation {
+  addKnowledgeToTree(
+    parentId: String!
+    knowledgeId: String!
+    level: Int!
+  ): Knowledge
     @cypher(
       statement: """
       MATCH (p {id: $parentId})
@@ -173,7 +219,10 @@ type Mutation {
       """
     )
 
-  attachRequiredSkills(knowledgeId: String!, requiredSkills: [RequiredSkill!]!): Knowledge
+  attachRequiredSkills(
+    knowledgeId: String!
+    requiredSkills: [RequiredSkill!]!
+  ): Knowledge
     @cypher(
       statement: """
       MATCH (k:Knowledge {id: $knowledgeId})
@@ -185,7 +234,10 @@ type Mutation {
       """
     )
 
-  attachRequiredCategories(knowledgeId: String!, requiredCategories: [RequiredCategory!]!): Knowledge
+  attachRequiredCategories(
+    knowledgeId: String!
+    requiredCategories: [RequiredCategory!]!
+  ): Knowledge
     @cypher(
       statement: """
       MATCH (k:Knowledge {id: $knowledgeId})
@@ -197,7 +249,10 @@ type Mutation {
       """
     )
 
-  attachRequiredCerts(knowledgeId: String!, requiredCerts: [RequiredCert!]!): Knowledge
+  attachRequiredCerts(
+    knowledgeId: String!
+    requiredCerts: [RequiredCert!]!
+  ): Knowledge
     @cypher(
       statement: """
       MATCH (k:Knowledge {id: $knowledgeId})
@@ -208,14 +263,27 @@ type Mutation {
       RETURN k
       """
     )
-  
-  attachRequiredPrompts(knowledgeId: String!, requiredPrompts: [RequiredPrompt!]!): Knowledge
+
+  attachRequiredPrompts(
+    knowledgeId: String!
+    requiredPrompts: [RequiredPrompt!]!
+  ): Knowledge
     @cypher(
       statement: """
       MATCH (k:Knowledge {id: $knowledgeId})
       UNWIND $requiredPrompts as prompt
       CREATE (:Prompt {id: randomUUID(), question: prompt.question, type: prompt.type, correctAnswer: prompt.correctAnswer, choices: prompt.choices})-[:REQUIREMENT_FOR]->(k)
       WITH k, count(*) as dummy
+      RETURN k
+      """
+    )
+
+  claimKnowledge(knowledgeId: String!): Knowledge
+    @cypher(
+      statement: """
+      MATCH (p:Person)
+      MATCH (k:Knowledge {id: $knowledgeId})
+      CREATE (p)-[:HAS_KNOWLEDGE]->(k)
       RETURN k
       """
     )

@@ -32,6 +32,7 @@ export const GetKnowledgeDetails = gql`
           minProjects
           node {
             name
+            id
           }
         }
       }
@@ -42,6 +43,7 @@ export const GetKnowledgeDetails = gql`
           minProjects
           node {
             name
+            id
           }
         }
       }
@@ -49,6 +51,7 @@ export const GetKnowledgeDetails = gql`
         edges {
           node {
             name
+            id
           }
         }
       }
@@ -90,3 +93,42 @@ export const CreateKnowledge = gql`
   ]
 }
 */
+
+export const GetUserKnowledge = gql`
+  query GetUserKnowledge {
+    people {
+      knownSkillsConnection {
+        edges {
+          rating
+          node {
+            name
+            id
+            categories {
+              name
+              id
+            }
+          }
+        }
+      }
+      knownCerts {
+        name
+        id
+      }
+      projectAssessments {
+        skillsUsedConnection {
+          edges {
+            rating
+            node {
+              name
+              id
+              categories {
+                name
+                id
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
