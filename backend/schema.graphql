@@ -22,6 +22,7 @@ interface UsesSkill @relationshipProperties {
 type Person {
   name: String!
   id: String!
+  answeredPrompts: [Prompt!]! @relationship(type: "USER_RESPONSE", direction: OUT, properties: "UserResponse")
   knownSkills: [Skill!]!
     @relationship(type: "HAS_SKILL", direction: OUT, properties: "HasSkill")
   knownCerts: [Certification!]! @relationship(type: "ACQUIRED", direction: OUT)
@@ -72,12 +73,18 @@ input RequiredCategory {
   minProjects: Int!
 }
 
+interface UserResponse @relationshipProperties {
+  response: String!
+  verified: Boolean!
+}
+
 type Prompt {
   id: String!
   question: String!
   type: String!
   correctAnswer: String
   choices: [String!]
+  peopleAnswered: [Person!]! @relationship(type: "USER_RESPONSE", direction: IN, properties: "UserResponse")
 }
 
 input RequiredPrompt {
@@ -297,6 +304,24 @@ type Mutation {
       CREATE (p)-[:HAS_KNOWLEDGE]->(k)
       CREATE (p)-[:HAS_COMPETENCY]->(c)
       RETURN c
+      """
+    )
+
+  answerPrompt(
+    promptId: String!
+    response: String!
+    verified: Boolean!
+  ): Prompt
+    @cypher(
+      statement: """
+      MATCH (p:Person)
+      MATCH (q:Prompt {id: $promptId})
+      MERGE (p)-[r:USER_RESPONSE]->(q)
+      ON MATCH
+        SET r.response = $response, r.verified = $verified
+      ON CREATE
+        SET r.response = $response, r.verified = $verified
+      RETURN q
       """
     )
 }

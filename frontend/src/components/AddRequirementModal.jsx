@@ -29,7 +29,7 @@ const AddRequirementModal = ({ closeModal, addRequirement }) => {
   });
   const [promptReq, setPromptReq] = useState({
     name: "",
-    type: "multiple choice",
+    type: "",
     choices: [],
     correctAnswer: "",
   });
@@ -43,13 +43,13 @@ const AddRequirementModal = ({ closeModal, addRequirement }) => {
 
   const handleAddRequirement = () => {
     const reqDict = {
-        "Skill": skillReq,
-        "Skill Category": categoryReq,
-        "Certification": certReq,
-        "Prompt": promptReq
-    }
+      Skill: skillReq,
+      "Skill Category": categoryReq,
+      Certification: certReq,
+      Prompt: promptReq,
+    };
 
-    addRequirement(reqType, reqDict[reqType])
+    addRequirement(reqType, reqDict[reqType]);
     closeModal();
   };
 
@@ -255,63 +255,155 @@ const AddRequirementModal = ({ closeModal, addRequirement }) => {
                   name: e.target.value,
                 }))
               }
-              className="w-1/2 mt-1 text-base font-normal p-1"
+              className="w-2/3 mt-1 text-base font-normal p-1"
             />
           </label>
           <label className="flex flex-col font-medium text-sm mt-2">
-            Answers
-            <div className="flex flex-col items-center rounded-md border border-black p-2">
-              {promptReq.choices.map((a, i) => {
-                return (
-                  <div
-                    className="w-full flex items-center text-base p-1"
-                    key={i}
+            Prompt Type
+            <select
+              value={promptReq.type}
+              onChange={(e) => {
+                setPromptReq((p) => ({
+                  ...p,
+                  type: e.target.value,
+                  choices: [],
+                  correctAnswer: e.target.value === "checklist" ? "0" : "",
+                }));
+                setAnswerInput("");
+              }}
+              className="w-1/2 mt-1 text-base font-normal p-1"
+            >
+              <option />
+              <option value={"multiple choice"}>Multiple Choice</option>
+              <option value={"checklist"}>Checklist</option>
+              <option value={"short answer"}>Short Answer</option>
+            </select>
+          </label>
+          {promptReq.type === "multiple choice" && (
+            <label className="flex flex-col font-medium text-sm mt-2">
+              Answers
+              <div className="flex flex-col items-center rounded-md border border-black p-2">
+                {promptReq.choices.map((a, i) => {
+                  return (
+                    <div
+                      className="w-full flex items-center text-base p-1"
+                      key={i}
+                    >
+                      <input
+                        type="radio"
+                        name="correct"
+                        className="mr-2"
+                        checked={promptReq.correctAnswer === a}
+                        onChange={() =>
+                          setPromptReq((p) => ({ ...p, correctAnswer: a }))
+                        }
+                      />
+                      {a}
+                      <span
+                        onClick={() => {
+                          let newChoices = [...promptReq.choices];
+                          newChoices.splice(i, 1);
+                          setPromptReq((p) => ({
+                            ...p,
+                            choices: newChoices,
+                          }));
+                        }}
+                        className="ml-2 text-red-600 cursor-pointer rounded-md hover:bg-gray-200"
+                      >
+                        X
+                      </span>
+                    </div>
+                  );
+                })}
+                <div className="w-full flex items-center">
+                  <input
+                    value={answerInput}
+                    onChange={(e) => setAnswerInput(e.target.value)}
+                    className="text-base font-normal p-1"
+                  />
+                  <button
+                    onClick={() => {
+                      setAnswerInput("");
+                      setPromptReq((p) => ({
+                        ...p,
+                        choices: [...p.choices, answerInput],
+                      }));
+                    }}
+                    className="text-sm text-white bg-slate-700 rounded-md p-1 ml-2 hover:bg-slate-600"
                   >
+                    Add Answer
+                  </button>
+                </div>
+              </div>
+            </label>
+          )}
+          {promptReq.type === "checklist" && (
+            <>
+              <label className="flex flex-col font-medium text-sm mt-2">
+                Answers
+                <div className="flex flex-col items-center rounded-md border border-black p-2">
+                  {promptReq.choices.map((a, i) => {
+                    return (
+                      <div
+                        key={i}
+                        className="w-full flex items-center text-base p-1"
+                      >
+                        {a}
+                        <span
+                          onClick={() => {
+                            let newChoices = [...promptReq.choices];
+                            newChoices.splice(i, 1);
+                            setPromptReq((p) => ({
+                              ...p,
+                              choices: newChoices,
+                            }));
+                          }}
+                          className="ml-2 text-red-600 cursor-pointer rounded-md hover:bg-gray-200"
+                        >
+                          X
+                        </span>
+                      </div>
+                    );
+                  })}
+                  <div className="w-full flex items-center">
                     <input
-                      type="radio"
-                      name="correct"
-                      className="mr-2"
-                      checked={promptReq.correctAnswer === a}
-                      onChange={() => setPromptReq((p) => ({ ...p, correctAnswer: a }))}
+                      type="text"
+                      value={answerInput}
+                      onChange={(e) => setAnswerInput(e.target.value)}
+                      className="text-base font-normal p-1"
                     />
-                    {a}
-                    <span
+                    <button
                       onClick={() => {
-                        let newChoices = [...promptReq.choices];
-                        newChoices.splice(i, 1);
+                        setAnswerInput("");
                         setPromptReq((p) => ({
                           ...p,
-                          choices: newChoices,
+                          choices: [...p.choices, answerInput],
                         }));
                       }}
-                      className="ml-2 text-red-600 cursor-pointer rounded-md hover:bg-gray-200"
+                      className="text-sm text-white bg-slate-700 rounded-md p-1 ml-2 hover:bg-slate-600"
                     >
-                      X
-                    </span>
+                      Add Answer
+                    </button>
                   </div>
-                );
-              })}
-              <div className="w-full flex items-center">
+                </div>
+              </label>
+              <label className="flex flex-col font-medium text-sm mt-2">
+                Required Answers
                 <input
-                  value={answerInput}
-                  onChange={(e) => setAnswerInput(e.target.value)}
-                  className="text-base font-normal p-1"
-                />
-                <button
-                  onClick={() => {
-                    setAnswerInput("");
+                  type="number"
+                  value={promptReq.correctAnswer}
+                  onChange={(e) =>
                     setPromptReq((p) => ({
                       ...p,
-                      choices: [...p.choices, answerInput],
-                    }));
-                  }}
-                  className="text-sm text-white bg-slate-700 rounded-md p-1 ml-2 hover:bg-slate-600"
-                >
-                  Add Answer
-                </button>
-              </div>
-            </div>
-          </label>
+                      correctAnswer: e.target.value,
+                    }))
+                  }
+                  min={0}
+                  className="w-1/3 mt-1 text-base font-normal p-1"
+                />
+              </label>
+            </>
+          )}
         </>
       )}
       <div className="flex justify-evenly w-full mt-2">

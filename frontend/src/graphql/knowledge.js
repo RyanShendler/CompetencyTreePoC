@@ -61,6 +61,14 @@ export const GetKnowledgeDetails = gql`
             question
             choices
             correctAnswer
+            type
+            id
+            peopleAnsweredConnection {
+              edges {
+                verified
+                response
+              }
+            }
           }
         }
       }
@@ -143,5 +151,28 @@ export const ClaimKnowledge = gql`
 /*
 {
   "knowledgeId": null
+}
+*/
+
+export const AnswerPrompt = gql`
+  mutation AnswerPrompt(
+    $promptId: String!
+    $response: String!
+    $verified: Boolean!
+  ) {
+    answerPrompt(
+      promptId: $promptId
+      response: $response
+      verified: $verified
+    ) {
+      id
+    }
+  }
+`;
+/*
+{  
+  "promptId": null,
+  "response": null,
+  "verified": nulll
 }
 */

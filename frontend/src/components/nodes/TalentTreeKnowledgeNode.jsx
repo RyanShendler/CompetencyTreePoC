@@ -10,6 +10,7 @@ import {
   checkSkillRequirement,
 } from "../../lib/talentTreeLib";
 import { CompleteCompetency } from "../../graphql/competencies";
+import MiniAssessment from "../MiniAssessment";
 
 const skillRatingMap = ["knowledgeable", "proficient", "expert"];
 
@@ -17,6 +18,7 @@ const TalentTreeKnowledgeNode = ({
   data: { id, name, completed, locked, layer },
 }) => {
   const [open, setOpen] = useState(false);
+  const [takingAssessment, setTakingAssessment] = useState(false);
   const [reqList, setReqList] = useState([]);
   const [questions, setQuestions] = useState([]);
   const { layers, compId } = useSelector((state) => state.layer);
@@ -31,6 +33,7 @@ const TalentTreeKnowledgeNode = ({
         id: id,
       },
     },
+    fetchPolicy: "network-only",
   });
   const [claimKnowledge] = useMutation(ClaimKnowledge, {
     refetchQueries: ["GetCompetencyTree"],
@@ -85,14 +88,34 @@ const TalentTreeKnowledgeNode = ({
 
       return { name: `Must have ${reqCert.node.name}`, completed };
     });
+
     const promptReqs = knowledge?.requiredPromptsConnection.edges.map(
-      (reqPrompt) => ({
-        prompt: reqPrompt.node.question,
-        answers: reqPrompt.node.choices,
-        correctAnswer: reqPrompt.node.correctAnswer,
-        input: "",
-        error: false,
-      })
+      (reqPrompt) => {
+        let response = "";
+        if (reqPrompt.node.type === "checklist") {
+          response = !!reqPrompt.node.peopleAnsweredConnection.edges?.[0]
+            ?.response
+            ? JSON.parse(
+                reqPrompt.node.peopleAnsweredConnection.edges?.[0]?.response
+              )
+            : reqPrompt.node.choices.map(() => false);
+        } else {
+          response =
+            reqPrompt.node.peopleAnsweredConnection.edges?.[0]?.response ?? "";
+        }
+
+        return {
+          prompt: reqPrompt.node.question,
+          answers: reqPrompt.node.choices,
+          correctAnswer: reqPrompt.node.correctAnswer,
+          id: reqPrompt.node.id,
+          response,
+          verified:
+            !!reqPrompt.node.peopleAnsweredConnection.edges.length &&
+            reqPrompt.node.peopleAnsweredConnection.edges?.[0].verified,
+          type: reqPrompt.node.type,
+        };
+      }
     );
 
     setReqList([...skillReqs, ...categoryReqs, ...certReqs]);
@@ -100,20 +123,6 @@ const TalentTreeKnowledgeNode = ({
   }, [knowledge, userSkills, userProjectSkills, userCerts]);
 
   const handleClaimKnowledge = async () => {
-    let error = false;
-    const validatedQuestions = questions.map((q) => {
-      let questionError = false;
-      if (q.input !== q.correctAnswer) {
-        questionError = true;
-        error = true;
-      }
-      return { ...q, error: questionError };
-    });
-    if (error) {
-      setQuestions(validatedQuestions);
-      return;
-    }
-
     //complete competency node if last node in last layer
     const complete =
       layer === layers.length &&
@@ -123,7 +132,7 @@ const TalentTreeKnowledgeNode = ({
       await completeCompetency({
         variables: {
           knowledgeId: id,
-          competencyId: compId
+          competencyId: compId,
         },
       });
     } else {
@@ -156,100 +165,82 @@ const TalentTreeKnowledgeNode = ({
       <Handle type="source" position="bottom" />
       <Modal
         open={open}
-        onSecondaryButtonClick={() => setOpen(false)}
+        onSecondaryButtonClick={() => {
+          setOpen(false);
+          setTakingAssessment(false);
+        }}
         content={
           <div className="flex flex-col">
-            <h3 className="text-sm font-medium">{name}</h3>
-            {!knowledge ? (
-              <div className="text-sm font-normal mt-2">Loading...</div>
+            {takingAssessment ? (
+              <MiniAssessment
+                name={`${name} Assessment`}
+                questions={questions}
+                setQuestions={setQuestions}
+                completeAssessment={() => setTakingAssessment(false)}
+              />
             ) : (
               <>
-                <div className="text-sm font-normal mt-2">
-                  {knowledge.description}
-                </div>
-                <div className="flex flex-col mt-4">
-                  <h3 className="text-sm font-medium">Requirements:</h3>
-                  <ul className="list-disc list-inside">
-                    {!reqList.length ? (
-                      <li className="text-sm">No Requirements</li>
-                    ) : (
-                      reqList.map((req, i) => {
-                        return (
-                          <li className="text-sm flex" key={i}>
-                            {req.name}
-                            {req.completed ? (
-                              <span className="ml-1 text-green-600">✓</span>
-                            ) : (
-                              <span className="ml-1 text-red-600">X</span>
-                            )}
-                          </li>
-                        );
-                      })
-                    )}
-                  </ul>
-                </div>
-                <div className="flex flex-col mt-4">
-                  <h3 className="text-sm font-medium">Questions:</h3>
-                  <div className="flex flex-col">
-                    {!questions.length ? (
-                      <div className="text-sm">No Questions</div>
-                    ) : (
-                      questions.map((q, i) => {
-                        return (
-                          <label className="text-sm flex flex-col mt-1" key={i}>
-                            {q.prompt}
-                            {q.answers.map((a, j) => (
-                              <div
-                                key={j}
-                                className="flex flex-row items-center ml-2"
-                              >
-                                <input
-                                  name={questions[i].prompt}
-                                  checked={
-                                    questions[i].input ===
-                                    questions[i].answers[j]
-                                  }
-                                  onChange={() => {
-                                    const newQuestions = [...questions];
-                                    newQuestions[i].input =
-                                      questions[i].answers[j];
-                                    newQuestions[i].error = false;
-                                    setQuestions(newQuestions);
-                                  }}
-                                  className="mr-1"
-                                  type="radio"
-                                />
-                                {a}
-                              </div>
-                            ))}
-                            <span
-                              className={`text-sm text-red-600 ${
-                                questions[i].error ? "block" : "hidden"
-                              }`}
-                            >
-                              This answer is incorrect
-                            </span>
-                          </label>
-                        );
-                      })
-                    )}
-                  </div>
+                <h3 className="text-sm font-medium">{name}</h3>
+                {!knowledge ? (
+                  <div className="text-sm font-normal mt-2">Loading...</div>
+                ) : (
+                  <>
+                    <div className="text-sm font-normal mt-2">
+                      {knowledge.description}
+                    </div>
+                    <div className="flex flex-col mt-4">
+                      <h3 className="text-sm font-medium">Requirements:</h3>
+                      <ul className="list-disc list-inside">
+                        {!reqList.length ? (
+                          <li className="text-sm">No Requirements</li>
+                        ) : (
+                          reqList.map((req, i) => {
+                            return (
+                              <li className="text-sm flex" key={i}>
+                                {req.name}
+                                {req.completed ? (
+                                  <span className="ml-1 text-green-600">✓</span>
+                                ) : (
+                                  <span className="ml-1 text-red-600">X</span>
+                                )}
+                              </li>
+                            );
+                          })
+                        )}
+                      </ul>
+                    </div>
+                    <div className="flex flex-col mt-4">
+                      {!!questions.length && (
+                        <>
+                          <h3 className="text-sm font-medium">Questions:</h3>
+                          <button
+                            disabled={!!!questions.find((q) => !q.verified)}
+                            onClick={() => setTakingAssessment(true)}
+                            className="rounded-md p-1 text-white bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800 w-1/3 mt-2"
+                          >
+                            Take Assessment
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </>
+                )}
+                <div className="flex justify-center w-full mt-4">
+                  <button
+                    onClick={() => handleClaimKnowledge()}
+                    disabled={
+                      !knowledge ||
+                      (reqList.length &&
+                        !!reqList.find((req) => !req.completed)) ||
+                      (questions.length && !!questions.find((q) => !q.verified))
+                    }
+                    className="p-1 w-1/2 rounded-md text-white bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800"
+                  >
+                    Claim Knowledge
+                  </button>
                 </div>
               </>
             )}
-            <div className="flex justify-center w-full mt-4">
-              <button
-                onClick={() => handleClaimKnowledge()}
-                disabled={
-                  !knowledge ||
-                  (reqList.length && !!reqList.find((req) => !req.completed)) ||
-                  (questions.length && !!questions.find((q) => !q.input))
-                }
-                className="p-1 w-1/2 rounded-md text-white bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800"
-              >
-                Claim Knowledge
-              </button>
-            </div>
           </div>
         }
       />
