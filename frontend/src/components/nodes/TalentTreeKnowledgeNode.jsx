@@ -9,14 +9,17 @@ import {
   checkCertRequirement,
   checkSkillRequirement,
 } from "../../lib/talentTreeLib";
+import { CompleteCompetency } from "../../graphql/competencies";
 
 const skillRatingMap = ["knowledgeable", "proficient", "expert"];
 
-const TalentTreeKnowledgeNode = ({ data: { id, name, completed, locked, layer } }) => {
+const TalentTreeKnowledgeNode = ({
+  data: { id, name, completed, locked, layer },
+}) => {
   const [open, setOpen] = useState(false);
   const [reqList, setReqList] = useState([]);
   const [questions, setQuestions] = useState([]);
-  const {layers} = useSelector((state) => state.layer)
+  const { layers, compId } = useSelector((state) => state.layer);
   const {
     skills: userSkills,
     projectSkills: userProjectSkills,
@@ -30,6 +33,9 @@ const TalentTreeKnowledgeNode = ({ data: { id, name, completed, locked, layer } 
     },
   });
   const [claimKnowledge] = useMutation(ClaimKnowledge, {
+    refetchQueries: ["GetCompetencyTree"],
+  });
+  const [completeCompetency] = useMutation(CompleteCompetency, {
     refetchQueries: ["GetCompetencyTree"],
   });
   const knowledge = knowledgeData?.knowledges?.[0];
@@ -108,11 +114,25 @@ const TalentTreeKnowledgeNode = ({ data: { id, name, completed, locked, layer } 
       return;
     }
 
-    await claimKnowledge({
-      variables: {
-        knowledgeId: id,
-      },
-    });
+    //complete competency node if last node in last layer
+    const complete =
+      layer === layers.length &&
+      layers[layer - 1].required === layers[layer - 1].completed + 1;
+
+    if (complete) {
+      await completeCompetency({
+        variables: {
+          knowledgeId: id,
+          competencyId: compId
+        },
+      });
+    } else {
+      await claimKnowledge({
+        variables: {
+          knowledgeId: id,
+        },
+      });
+    }
     setOpen(false);
   };
 

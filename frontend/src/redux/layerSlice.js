@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initState = {
-  layers: []
+  layers: [],
+  compId: ""
 };
 
 export const layerSlice = createSlice({

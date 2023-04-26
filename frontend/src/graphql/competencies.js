@@ -75,3 +75,17 @@ export const AddKnowledgeToTree = gql`
   "level": nulll
 }
 */
+
+export const CompleteCompetency = gql`
+  mutation CompleteCompetency($knowledgeId: String!, $competencyId: String!) {
+    completeCompetency(knowledgeId: $knowledgeId, competencyId: $competencyId) {
+      name
+    }
+  }
+`;
+/*
+{  
+  "knowledgeId": null,
+  "competencyId": nulll
+}
+*/

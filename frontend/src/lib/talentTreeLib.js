@@ -11,7 +11,7 @@ const getLayerColor = (layerNum) => {
   const colors = [
     "rgba(255, 0, 0, 0.2)",
     "rgba(0, 255, 255, 0.2)",
-    "rgba(0, 255, 0, 0.2)",
+    "rgba(0, 0, 255, 0.2)",
     "rgba(255, 0, 255, 0.2)",
     "rgba(255, 255, 0, 0.2)",
   ];
@@ -97,7 +97,7 @@ const getNodes = (stratifiedNodes) => {
     layerStart = layerStart + layerHeight + 25; //25 for margin
     if (!checkLayerComplete(layer, compNode.levels[i])) locked = true;
   });
-  store.dispatch(toggleLayers({layers: completedLayers}))
+  store.dispatch(toggleLayers({layers: completedLayers, compId: compNode.id}))
   return ret;
 };
 

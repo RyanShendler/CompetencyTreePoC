@@ -287,4 +287,16 @@ type Mutation {
       RETURN k
       """
     )
+
+  completeCompetency(knowledgeId: String!, competencyId: String!): Competency
+    @cypher(
+      statement: """
+      MATCH (p:Person)
+      MATCH (k:Knowledge {id: $knowledgeId})
+      MATCH (c:Competency {id: $competencyId})
+      CREATE (p)-[:HAS_KNOWLEDGE]->(k)
+      CREATE (p)-[:HAS_COMPETENCY]->(c)
+      RETURN c
+      """
+    )
 }
