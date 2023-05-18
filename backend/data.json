@@ -1,0 +1,98 @@
+{"type":"node","id":"0","labels":["Skill"],"properties":{"name":"HTML","id":"569852b9-c279-4b96-a226-169da18416b4"}}
+{"type":"node","id":"1","labels":["Skill"],"properties":{"name":"CSS","id":"900a3238-d52e-4d0e-9aad-1192346db8ad"}}
+{"type":"node","id":"2","labels":["Skill"],"properties":{"name":"JavaScript","id":"2701445a-25cf-4580-822c-81419660144b"}}
+{"type":"node","id":"3","labels":["Skill"],"properties":{"name":"TypeScript","id":"c5e76735-16e7-4b0f-99fd-ba13dbb96654"}}
+{"type":"node","id":"4","labels":["Skill"],"properties":{"name":"React","id":"613eba99-bc5d-41cc-a23c-55bd863e9d5f"}}
+{"type":"node","id":"5","labels":["Skill"],"properties":{"name":"Angular","id":"17f0cd5e-0888-4eb1-9193-6c0b1534b923"}}
+{"type":"node","id":"6","labels":["Skill"],"properties":{"name":"Vue","id":"063df9f5-a29e-4d48-bfeb-99fe0660f1df"}}
+{"type":"node","id":"7","labels":["Skill"],"properties":{"name":"Git","id":"a8d033e4-8b43-4db5-bea6-427de2d1dcfd"}}
+{"type":"node","id":"8","labels":["Knowledge"],"properties":{"name":"Version Control","description":"Basic knowledge of version control systems","id":"fb076bcc-9c53-4bd1-8e47-3fd0592c6ea9"}}
+{"type":"node","id":"9","labels":["Prompt"],"properties":{"question":"Which version control system do you know?","id":"9843b8fb-bc7b-4fea-baef-bb4590423b68","type":"multiple choice","choices":["Git","Bitbucket"],"correctAnswer":"Git"}}
+{"type":"node","id":"10","labels":["Knowledge"],"properties":{"name":"Git Workflow","description":"Knowledge of Git","id":"529c2aa6-50d8-44c1-aeed-58d2d93adbb4"}}
+{"type":"node","id":"11","labels":["Knowledge"],"properties":{"name":"JavaScript 1","description":"Basic knowledge of JavaScript","id":"d14573eb-08e8-4dc5-aa31-bb31a97b39bb"}}
+{"type":"node","id":"12","labels":["Knowledge"],"properties":{"name":"TypeScript 1","description":"Basic knowledge of TypeScript","id":"ff9ea33f-0e0b-4411-9cc5-ab671ed84e5f"}}
+{"type":"node","id":"13","labels":["Knowledge"],"properties":{"name":"FE Frameworks 1","description":"Basic knowledge of React, Angular, or Vue","id":"4ddff83f-e7a8-4782-b6b2-210012b4be21"}}
+{"type":"node","id":"14","labels":["Competency"],"properties":{"name":"Backend Jr","id":"fa05bd87-91c1-4e7e-9455-2e6e9fd52063","levels":[1]}}
+{"type":"node","id":"15","labels":["Knowledge"],"properties":{"name":"Python 2","description":"Intermediate knowledge of Python","id":"9dc22ec5-342a-4ad5-be71-de6eac8e5e5e"}}
+{"type":"node","id":"16","labels":["Project"],"properties":{"name":"Connect","id":"b831ca31-6f08-4063-a283-a9d4721ff334"}}
+{"type":"node","id":"17","labels":["Knowledge"],"properties":{"name":"FE Fundamentals 2","description":"Must have intermediate knowledge of HTML and CSS","id":"8a041158-7e0b-40e4-b447-385e5d952084"}}
+{"type":"node","id":"18","labels":["Knowledge"],"properties":{"name":"JavaScript 2","description":"Intermediate Knowledge of JavaScript","id":"05b46d52-327e-4e13-9aef-511f66dcbb79"}}
+{"type":"node","id":"19","labels":["Knowledge"],"properties":{"name":"TypeScript 2","description":"Intermediate knowledge of TypeScript","id":"524ea3cb-08b6-403d-b6fa-baa292211f53"}}
+{"type":"node","id":"20","labels":["Competency"],"properties":{"name":"Frontend Mid","id":"34cdec55-34f9-4cce-bb87-03d99bd29286","levels":[2,1]}}
+{"type":"node","id":"21","labels":["Knowledge"],"properties":{"name":"FE Fundamentals 3","description":"Must have expert knowledge of HTML and CSS","id":"ca409a8d-40e3-43d2-ae59-a1c48721e40d"}}
+{"type":"node","id":"22","labels":["Prompt"],"properties":{"question":"Do you know Python?","id":"c6367f77-8808-46e2-8eac-2f23e0a753ad","choices":["Yes","No"],"correctAnswer":"Yes","type":"multiple choice"}}
+{"type":"node","id":"23","labels":["Competency"],"properties":{"name":"Frontend Sr","id":"7cf6c7bc-cd1e-4129-86f9-0cc302c6c75e","levels":[1]}}
+{"type":"node","id":"24","labels":["Skill"],"properties":{"name":"Python","id":"9d76b73c-b536-4b43-be33-cb3590910795"}}
+{"type":"node","id":"25","labels":["Knowledge"],"properties":{"name":"Cloud Fundamentals 1","description":"Basics of cloud computing","id":"a6f6c0b0-dcb6-44c9-b145-6cb7c1267ef2"}}
+{"type":"node","id":"26","labels":["Competency"],"properties":{"name":"Cloud Jr","id":"5696188e-7183-4a56-8010-cde8e6ee14ee","levels":[1]}}
+{"type":"node","id":"27","labels":["SkillCategory"],"properties":{"name":"FE Frameworks","id":"bb9ba92d-3c9c-4539-88f1-2e02774d5f1a"}}
+{"type":"node","id":"28","labels":["Certification"],"properties":{"name":"AWS Cloud Practitioner","id":"6c27af0a-d73c-4726-bdfc-d290aacbc553"}}
+{"type":"node","id":"29","labels":["Certification"],"properties":{"name":"AWS Machine Learning","id":"3d518f9a-ee82-44e6-94de-793be7cc042f"}}
+{"type":"node","id":"30","labels":["Knowledge"],"properties":{"name":"FE Fundamentals 1","description":"Basic knowledge of HTML and CSS","id":"86405140-044c-4244-abd3-d572efb5fcd1"}}
+{"type":"node","id":"31","labels":["Knowledge"],"properties":{"name":"Internet Basics","description":"Basic knowledge of networking","id":"80235fb3-1b89-4794-82d8-4288dda244f5"}}
+{"type":"node","id":"32","labels":["Person"],"properties":{"name":"Ryan","id":"b0e7e322-030e-4b74-8fd8-d1d254a88e7e"}}
+{"type":"node","id":"33","labels":["Prompt"],"properties":{"question":"Do you know the basics of the internet?","id":"c2f0aa9b-aa33-4445-b8e4-e67feb68b96a","type":"multiple choice","choices":["Yes","No"],"correctAnswer":"Yes"}}
+{"type":"node","id":"34","labels":["Competency"],"properties":{"name":"Frontend Jr","id":"97f21bfe-ad47-4aca-896d-388f87e8fd1e","levels":[2,4,1]}}
+{"type":"node","id":"35","labels":["Prompt"],"properties":{"question":"What is the answer?","id":"7685465c-db5a-4528-be5d-50b587a4f4ce","type":"multiple choice","choices":["Answer 1","Answer 2","Answer 3","Answer 4"],"correctAnswer":"Answer 2"}}
+{"type":"node","id":"36","labels":["Project"],"properties":{"name":"Mishima Dojo","id":"c64f1707-501e-42dc-9a3d-6392f258dd2d"}}
+{"type":"node","id":"37","labels":["AssessmentCompletion"]}
+{"type":"node","id":"38","labels":["AssessmentCompletion"]}
+{"type":"node","id":"39","labels":["Knowledge"],"properties":{"name":"Backend Fundamentals","description":"JavaScript and at least 1 database","id":"ca24b45d-ea05-4684-a60f-daec5fdfb695"}}
+{"type":"node","id":"40","labels":["Prompt"],"properties":{"question":"Have you used at least 1 database?","id":"9436ec44-2cd9-45ca-8b8a-0a84693b98e0","type":"multiple choice","choices":["Yes","No"],"correctAnswer":"Yes"}}
+{"type":"node","id":"41","labels":["Competency"],"properties":{"name":"Backend Mid","id":"6e904c82-9ce5-4005-8e5f-c7ce5606ed3e","levels":[1]}}
+{"type":"node","id":"42","labels":["Knowledge"],"properties":{"name":"Important Questions","description":"Testing the different types of prompts","id":"df191aa6-fef4-42ae-9f4c-0523b4114c13"}}
+{"type":"node","id":"43","labels":["Prompt"],"properties":{"question":"What is the correct multiple-choice answer?","id":"ca855ac4-f5c5-4a24-9a27-44adf4171092","type":"multiple choice","choices":["Correct Answer","Incorrect Answer"],"correctAnswer":"Correct Answer"}}
+{"type":"node","id":"44","labels":["Prompt"],"properties":{"question":"Select 2 of the 3 answers","id":"55e6b8fc-c8e8-4799-8568-00e0b441adca","choices":["Answer 1","Answer 2","Answer 3"],"correctAnswer":"2","type":"checklist"}}
+{"type":"node","id":"45","labels":["Prompt"],"properties":{"question":"Provide a short answer response","id":"ffe5d4a3-b140-464b-96f5-a11fcb2c1e26","choices":[],"correctAnswer":"","type":"short answer"}}
+{"type":"node","id":"46","labels":["Competency"],"properties":{"name":"Testing Prompts","id":"fb59177f-8655-43ef-9bc1-2dbbc3617ff2","levels":[1]}}
+{"id":"0","type":"relationship","label":"REQUIREMENT_FOR","start":{"id":"9","labels":["Prompt"]},"end":{"id":"8","labels":["Knowledge"]}}
+{"id":"1","type":"relationship","label":"REQUIREMENT_FOR","properties":{"minProjects":1,"minRating":2},"start":{"id":"7","labels":["Skill"]},"end":{"id":"10","labels":["Knowledge"]}}
+{"id":"2","type":"relationship","label":"REQUIREMENT_FOR","properties":{"minProjects":0,"minRating":2},"start":{"id":"2","labels":["Skill"]},"end":{"id":"11","labels":["Knowledge"]}}
+{"id":"3","type":"relationship","label":"REQUIREMENT_FOR","properties":{"minProjects":0,"minRating":2},"start":{"id":"3","labels":["Skill"]},"end":{"id":"12","labels":["Knowledge"]}}
+{"id":"4","type":"relationship","label":"REQUIREMENT_FOR","properties":{"minProjects":0,"minSkills":1,"minRating":2},"start":{"id":"27","labels":["SkillCategory"]},"end":{"id":"13","labels":["Knowledge"]}}
+{"id":"5","type":"relationship","label":"IS_PREREQUISITE","properties":{"level":1},"start":{"id":"34","labels":["Competency"]},"end":{"id":"30","labels":["Knowledge"]}}
+{"id":"6","type":"relationship","label":"REQUIREMENT_FOR","start":{"id":"43","labels":["Prompt"]},"end":{"id":"42","labels":["Knowledge"]}}
+{"id":"7","type":"relationship","label":"IS_PREREQUISITE","properties":{"level":1},"start":{"id":"20","labels":["Competency"]},"end":{"id":"17","labels":["Knowledge"]}}
+{"id":"8","type":"relationship","label":"IS_PREREQUISITE","properties":{"level":1},"start":{"id":"17","labels":["Knowledge"]},"end":{"id":"18","labels":["Knowledge"]}}
+{"id":"9","type":"relationship","label":"IS_PREREQUISITE","properties":{"level":2},"start":{"id":"18","labels":["Knowledge"]},"end":{"id":"19","labels":["Knowledge"]}}
+{"id":"10","type":"relationship","label":"IS_PREREQUISITE","properties":{"level":1},"start":{"id":"34","labels":["Competency"]},"end":{"id":"31","labels":["Knowledge"]}}
+{"id":"11","type":"relationship","label":"IS_PREREQUISITE","properties":{"level":1},"start":{"id":"23","labels":["Competency"]},"end":{"id":"21","labels":["Knowledge"]}}
+{"id":"12","type":"relationship","label":"REQUIREMENT_FOR","start":{"id":"44","labels":["Prompt"]},"end":{"id":"42","labels":["Knowledge"]}}
+{"id":"13","type":"relationship","label":"LEADS_TO","start":{"id":"20","labels":["Competency"]},"end":{"id":"23","labels":["Competency"]}}
+{"id":"14","type":"relationship","label":"REQUIREMENT_FOR","start":{"id":"45","labels":["Prompt"]},"end":{"id":"42","labels":["Knowledge"]}}
+{"id":"15","type":"relationship","label":"IS_PREREQUISITE","properties":{"level":1},"start":{"id":"26","labels":["Competency"]},"end":{"id":"25","labels":["Knowledge"]}}
+{"id":"16","type":"relationship","label":"SUB_CLASS_OF","start":{"id":"4","labels":["Skill"]},"end":{"id":"27","labels":["SkillCategory"]}}
+{"id":"17","type":"relationship","label":"SUB_CLASS_OF","start":{"id":"5","labels":["Skill"]},"end":{"id":"27","labels":["SkillCategory"]}}
+{"id":"18","type":"relationship","label":"SUB_CLASS_OF","start":{"id":"6","labels":["Skill"]},"end":{"id":"27","labels":["SkillCategory"]}}
+{"id":"19","type":"relationship","label":"IS_PREREQUISITE","properties":{"level":2},"start":{"id":"34","labels":["Competency"]},"end":{"id":"8","labels":["Knowledge"]}}
+{"id":"20","type":"relationship","label":"IS_PREREQUISITE","properties":{"level":2},"start":{"id":"8","labels":["Knowledge"]},"end":{"id":"10","labels":["Knowledge"]}}
+{"id":"21","type":"relationship","label":"IS_PREREQUISITE","properties":{"level":2},"start":{"id":"30","labels":["Knowledge"]},"end":{"id":"11","labels":["Knowledge"]}}
+{"id":"22","type":"relationship","label":"REQUIREMENT_FOR","properties":{"minProjects":0,"minRating":1},"start":{"id":"0","labels":["Skill"]},"end":{"id":"30","labels":["Knowledge"]}}
+{"id":"23","type":"relationship","label":"IS_PREREQUISITE","properties":{"level":2},"start":{"id":"11","labels":["Knowledge"]},"end":{"id":"12","labels":["Knowledge"]}}
+{"id":"24","type":"relationship","label":"REQUIREMENT_FOR","properties":{"minProjects":0,"minRating":1},"start":{"id":"1","labels":["Skill"]},"end":{"id":"30","labels":["Knowledge"]}}
+{"id":"25","type":"relationship","label":"REQUIREMENT_FOR","start":{"id":"33","labels":["Prompt"]},"end":{"id":"31","labels":["Knowledge"]}}
+{"id":"26","type":"relationship","label":"IS_PREREQUISITE","properties":{"level":3},"start":{"id":"11","labels":["Knowledge"]},"end":{"id":"13","labels":["Knowledge"]}}
+{"id":"27","type":"relationship","label":"HAS_SKILL","properties":{"rating":2},"start":{"id":"32","labels":["Person"]},"end":{"id":"0","labels":["Skill"]}}
+{"id":"28","type":"relationship","label":"ACQUIRED","start":{"id":"32","labels":["Person"]},"end":{"id":"28","labels":["Certification"]}}
+{"id":"29","type":"relationship","label":"HAS_EXPERIENCE","start":{"id":"32","labels":["Person"]},"end":{"id":"16","labels":["Project"]}}
+{"id":"30","type":"relationship","label":"HAS_EXPERIENCE","start":{"id":"32","labels":["Person"]},"end":{"id":"36","labels":["Project"]}}
+{"id":"31","type":"relationship","label":"COMPLETED","start":{"id":"32","labels":["Person"]},"end":{"id":"37","labels":["AssessmentCompletion"]}}
+{"id":"32","type":"relationship","label":"ASSESSMENT_FOR","start":{"id":"37","labels":["AssessmentCompletion"]},"end":{"id":"16","labels":["Project"]}}
+{"id":"33","type":"relationship","label":"COMPLETED","start":{"id":"32","labels":["Person"]},"end":{"id":"38","labels":["AssessmentCompletion"]}}
+{"id":"34","type":"relationship","label":"ASSESSMENT_FOR","start":{"id":"38","labels":["AssessmentCompletion"]},"end":{"id":"36","labels":["Project"]}}
+{"id":"35","type":"relationship","label":"USES_SKILL","properties":{"rating":2},"start":{"id":"37","labels":["AssessmentCompletion"]},"end":{"id":"0","labels":["Skill"]}}
+{"id":"36","type":"relationship","label":"USES_SKILL","properties":{"rating":2},"start":{"id":"37","labels":["AssessmentCompletion"]},"end":{"id":"4","labels":["Skill"]}}
+{"id":"37","type":"relationship","label":"USES_SKILL","properties":{"rating":3},"start":{"id":"38","labels":["AssessmentCompletion"]},"end":{"id":"0","labels":["Skill"]}}
+{"id":"38","type":"relationship","label":"USES_SKILL","properties":{"rating":3},"start":{"id":"38","labels":["AssessmentCompletion"]},"end":{"id":"1","labels":["Skill"]}}
+{"id":"39","type":"relationship","label":"USES_SKILL","properties":{"rating":2},"start":{"id":"37","labels":["AssessmentCompletion"]},"end":{"id":"7","labels":["Skill"]}}
+{"id":"40","type":"relationship","label":"HAS_SKILL","properties":{"rating":2},"start":{"id":"32","labels":["Person"]},"end":{"id":"4","labels":["Skill"]}}
+{"id":"41","type":"relationship","label":"IS_PREREQUISITE","properties":{"level":1},"start":{"id":"46","labels":["Competency"]},"end":{"id":"42","labels":["Knowledge"]}}
+{"id":"42","type":"relationship","label":"HAS_SKILL","properties":{"rating":1},"start":{"id":"32","labels":["Person"]},"end":{"id":"1","labels":["Skill"]}}
+{"id":"44","type":"relationship","label":"REQUIREMENT_FOR","properties":{"minProjects":0,"minRating":2},"start":{"id":"24","labels":["Skill"]},"end":{"id":"15","labels":["Knowledge"]}}
+{"id":"45","type":"relationship","label":"REQUIREMENT_FOR","start":{"id":"22","labels":["Prompt"]},"end":{"id":"15","labels":["Knowledge"]}}
+{"id":"46","type":"relationship","label":"HAS_SKILL","properties":{"rating":3},"start":{"id":"32","labels":["Person"]},"end":{"id":"2","labels":["Skill"]}}
+{"id":"47","type":"relationship","label":"IS_PREREQUISITE","properties":{"level":1},"start":{"id":"41","labels":["Competency"]},"end":{"id":"15","labels":["Knowledge"]}}
+{"id":"48","type":"relationship","label":"HAS_SKILL","properties":{"rating":2},"start":{"id":"32","labels":["Person"]},"end":{"id":"3","labels":["Skill"]}}
+{"id":"51","type":"relationship","label":"REQUIREMENT_FOR","properties":{"minProjects":0,"minRating":1},"start":{"id":"2","labels":["Skill"]},"end":{"id":"39","labels":["Knowledge"]}}
+{"id":"52","type":"relationship","label":"IS_PREREQUISITE","properties":{"level":1},"start":{"id":"14","labels":["Competency"]},"end":{"id":"39","labels":["Knowledge"]}}
+{"id":"53","type":"relationship","label":"REQUIREMENT_FOR","start":{"id":"40","labels":["Prompt"]},"end":{"id":"39","labels":["Knowledge"]}}
